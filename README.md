@@ -1,4 +1,6 @@
-![MediScan Logo](https://d112y698adiu2z.cloudfront.net/photos/production/software_thumbnail_photos/002/271/640/datas/medium.jpg)
+<p align="center">
+  <img src="https://d112y698adiu2z.cloudfront.net/photos/production/software_thumbnail_photos/002/271/640/datas/medium.jpg" alt="MediScan Logo" width="500" height="300">
+</p>
 
 # MediScan 🧾💊
 
