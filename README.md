@@ -56,7 +56,7 @@ MediScan/
 
 ## Live Demo
 
-You can try a live demo of MediScan here: [coming soon...](#)
+You can try a live demo of MediScan here: [Live Demo](https://alaamohamed2002.github.io/Frontend-Projects/MediScan/)
 
 ---
 
