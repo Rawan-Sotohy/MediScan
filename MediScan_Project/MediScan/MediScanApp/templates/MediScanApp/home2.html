@@ -1,0 +1,393 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Join Thousands Of Users Improving Their Health With AI-Powered Tool.">
+        <title>MediScan - Dashboard</title>
+        <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+        <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+        <!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"> -->
+        <style>
+            /* Modern Dashboard Styles */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+            }
+
+            /* Header Styles */
+            .home-header {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 15px 0;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .home-header .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .logo img {
+                height: 50px;
+                width: auto;
+            }
+
+            .links {
+                display: flex;
+                gap: 15px;
+            }
+
+            .links a {
+                text-decoration: none;
+                padding: 10px 20px;
+                border-radius: 25px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .back-home {
+                background: #667eea;
+                color: white;
+            }
+
+            .back-home:hover {
+                background: #764ba2;
+                transform: translateY(-2px);
+            }
+
+            .logout {
+                background: white;
+                color: #dc3545;
+                border: 2px solid #dc3545;
+            }
+
+            .logout:hover {
+                background: #dc3545;
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            /* Main Content */
+            .home {
+                padding: 40px 20px;
+            }
+
+            .home .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .welcome-section {
+                text-align: center;
+                margin-bottom: 40px;
+            }
+
+            .welcome-section h1 {
+                color: white;
+                font-size: 42px;
+                margin-bottom: 10px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .welcome-section h3 {
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 20px;
+                font-weight: 400;
+            }
+
+            /* Statistics Cards */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin-bottom: 40px;
+            }
+
+            .stat-card {
+                background: white;
+                padding: 25px;
+                border-radius: 15px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                transition: all 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .stat-card i {
+                font-size: 36px;
+                margin-bottom: 10px;
+                color: #667eea;
+            }
+
+            .stat-card h4 {
+                font-size: 32px;
+                color: #333;
+                margin-bottom: 5px;
+            }
+
+            .stat-card p {
+                color: #666;
+                font-size: 14px;
+            }
+
+            /* Action Boxes */
+            .boxs {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 30px;
+            }
+
+            .boxs a {
+                text-decoration: none;
+                display: block;
+            }
+
+            .box {
+                background: white;
+                padding: 40px 30px;
+                border-radius: 20px;
+                text-align: center;
+                transition: all 0.4s ease;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .box::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5px;
+                background: linear-gradient(90deg, #667eea, #764ba2);
+                transform: scaleX(0);
+                transition: transform 0.4s ease;
+            }
+
+            .box:hover::before {
+                transform: scaleX(1);
+            }
+
+            .box:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            }
+
+            .box i {
+                margin-bottom: 20px;
+                transition: all 0.3s ease;
+            }
+
+            .box:hover i {
+                transform: scale(1.2) rotate(5deg);
+            }
+
+            .box.blue i {
+                color: #2196f3;
+            }
+
+            .box.red i {
+                color: #f44336;
+            }
+
+            .box.green i {
+                color: #4caf50;
+            }
+
+            .box h3 {
+                color: #333;
+                font-size: 24px;
+                margin-bottom: 15px;
+            }
+
+            .box p {
+                color: #666;
+                font-size: 15px;
+                line-height: 1.6;
+            }
+
+            /* Notification Badge */
+            .notification-badge {
+                position: relative;
+            }
+
+            .notification-badge .badge-count {
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                background: #f44336;
+                color: white;
+                border-radius: 50%;
+                width: 22px;
+                height: 22px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: bold;
+                box-shadow: 0 2px 5px rgba(244, 67, 54, 0.4);
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .welcome-section h1 {
+                    font-size: 32px;
+                }
+
+                .welcome-section h3 {
+                    font-size: 16px;
+                }
+
+                .boxs {
+                    grid-template-columns: 1fr;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .links {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+            }
+
+            /* Animations */
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .box {
+                animation: fadeInUp 0.6s ease-out;
+            }
+
+            .box:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .box:nth-child(3) {
+                animation-delay: 0.4s;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header class="home-header">
+            <header class="container">
+                <div class="logo">
+                    <a href="{% url 'home' %}">
+                        <img src="{% static 'img/logo-2.png' %}" alt="MediScan Logo">
+                    </a>
+                </div>
+                <div class="links">
+                    <a href="{% url 'notifications' %}" class="notification-badge back-home">
+                        <i class="fa fa-bell"></i>
+                        Notifications
+                        {% if unread_notifications > 0 %}
+                        <span class="badge-count">{{ unread_notifications }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'logout' %}" class="logout">
+                        <i class="fa fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="home">
+            <div class="container">
+                <div class="welcome-section">
+                    <h1>Welcome, {{ user.name }}! 👋</h1>
+                    <h3>Please Select An Action Below</h3>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-file-prescription"></i>
+                        <h4>{{ total_prescriptions }}</h4>
+                        <p>Total Prescriptions</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <h4>{{ active_plans }}</h4>
+                        <p>Active Plans</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-bell"></i>
+                        <h4>{{ unread_notifications }}</h4>
+                        <p>New Notifications</p>
+                    </div>
+                </div>
+
+                <!-- Action Boxes -->
+                <div class="boxs">
+                    <a href="upload.html" class="upload-image">
+                        <div class="box blue">
+                            <i class="fas fa-upload fa-3x"></i>
+                            <h3>Extract Medicine</h3>
+                            <p>Upload Your Prescription And Automatically Extract Medicine Names, Dosages, And
+                                Instructions Using AI Technology.</p>
+                        </div>
+                    </a>
+
+                    <a href="dashboard.html" class="dashboard">
+                        <div class="box red">
+                            <i class="fas fa-calendar-check fa-3x"></i>
+                            <h3>Medication Plan</h3>
+                            <p>Get A Clear Daily Or Weekly Medication Plan Optimized For Your Health Needs And Schedule.
+                            </p>
+                        </div>
+                    </a>
+
+                    <a href="chat.html" class="chat">
+                        <div class="box green">
+                            <i class="fab fa-rocketchat fa-3x"></i>
+                            <h3>AI Chatbot</h3>
+                            <p>Ask Questions About Medications, Dosages, Or Instructions Directly To Our AI Assistant.
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static 'js/all.min.js' %}"></script>
+        <script src="{% static 'js/main.js' %}"></script>
+    </body>
+
+</html>

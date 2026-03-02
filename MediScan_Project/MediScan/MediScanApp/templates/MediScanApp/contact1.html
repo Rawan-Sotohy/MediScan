@@ -1,0 +1,408 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Join Thousands Of Users Improving Their Health With AI-Powered Tool.">
+        <title>MediScan - Contact Us</title>
+        <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+        <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+        <!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"> -->
+        <link rel="shortcut icon" href="{% static 'img/logo-2.png' %}" type="image/x-icon">
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                margin: 0;
+            }
+
+            /* Header Styles */
+            .home-header {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 15px 0;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .home-header .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .logo img {
+                height: 50px;
+            }
+
+            .links {
+                display: flex;
+                gap: 15px;
+            }
+
+            .links a {
+                text-decoration: none;
+                padding: 10px 20px;
+                border-radius: 25px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .back-home {
+                background: #667eea;
+                color: white;
+            }
+
+            .back-home:hover {
+                background: #764ba2;
+                transform: translateY(-2px);
+            }
+
+            .logout {
+                background: white;
+                color: #dc3545;
+                border: 2px solid #dc3545;
+            }
+
+            .logout:hover {
+                background: #dc3545;
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            /* Contact Section */
+            .contact {
+                padding: 60px 20px;
+            }
+
+            .contact .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: 1fr 2fr;
+                gap: 40px;
+                align-items: start;
+            }
+
+            /* Contact Info Cards */
+            .info {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .phone,
+            .location {
+                background: white;
+                padding: 30px;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                transition: all 0.3s ease;
+                text-align: center;
+            }
+
+            .phone:hover,
+            .location:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            }
+
+            .phone i,
+            .location i {
+                font-size: 48px;
+                margin-bottom: 15px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .phone p {
+                font-size: 24px;
+                font-weight: 700;
+                color: #333;
+                margin: 10px 0;
+            }
+
+            .phone span,
+            .location address {
+                color: #666;
+                font-size: 16px;
+                font-style: normal;
+            }
+
+            /* Contact Form Box */
+            .box {
+                background: white;
+                padding: 50px;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .content h1 {
+                color: #333;
+                font-size: 42px;
+                margin-bottom: 15px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .content p {
+                color: #666;
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 30px;
+            }
+
+            /* Alert Messages */
+            .alert {
+                padding: 15px 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                font-size: 14px;
+                animation: slideDown 0.3s ease-out;
+            }
+
+            .alert-success {
+                background: #d4edda;
+                color: #155724;
+                border-left: 4px solid #28a745;
+            }
+
+            .alert-error {
+                background: #f8d7da;
+                color: #721c24;
+                border-left: 4px solid #dc3545;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Form Styles */
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            form input,
+            form textarea {
+                padding: 15px 20px;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                font-size: 16px;
+                font-family: inherit;
+                transition: all 0.3s ease;
+            }
+
+            form input:focus,
+            form textarea:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+            form textarea {
+                min-height: 150px;
+                resize: vertical;
+            }
+
+            .btn {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 15px 40px;
+                border: none;
+                border-radius: 10px;
+                font-size: 18px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            }
+
+            .btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            }
+
+            /* Decorative Elements */
+            .phone::before,
+            .location::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5px;
+                background: linear-gradient(90deg, #667eea, #764ba2);
+                border-radius: 20px 20px 0 0;
+            }
+
+            .phone,
+            .location {
+                position: relative;
+            }
+
+            /* Responsive */
+            @media (max-width: 968px) {
+                .contact .container {
+                    grid-template-columns: 1fr;
+                }
+
+                .info {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 20px;
+                }
+
+                .box {
+                    padding: 30px 20px;
+                }
+
+                .content h1 {
+                    font-size: 32px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .links {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                .info {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* Loading Animation for Button */
+            .btn.loading {
+                pointer-events: none;
+                opacity: 0.7;
+            }
+
+            .btn.loading::after {
+                content: '';
+                position: absolute;
+                width: 16px;
+                height: 16px;
+                top: 50%;
+                left: 50%;
+                margin-left: -8px;
+                margin-top: -8px;
+                border: 2px solid white;
+                border-radius: 50%;
+                border-top-color: transparent;
+                animation: spin 0.6s linear infinite;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <header class="home-header">
+            <div class="container">
+                <div class="logo">
+                    <a href="{% url 'home' %}">
+                        <img src="{% static 'img/logo-2.png' %}" alt="MediScan Logo">
+                    </a>
+                </div>
+                <div class="links">
+                    <a href="{% url 'home' %}" class="back-home">
+                        <i class="fa fa-arrow-left"></i>Back
+                    </a>
+                    <a href="{% url 'logout' %}" class="logout">
+                        <i class="fa fa-sign-out-alt"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact">
+            <div class="container">
+                <!-- Contact Info Cards -->
+                <div class="info">
+                    <div class="phone">
+                        <i class="fa fa-phone"></i>
+                        <p>+20 1553 855 203</p>
+                        <span>Customer Services</span>
+                    </div>
+
+                    <div class="location">
+                        <i class="fas fa-location-dot"></i>
+                        <address>
+                            Assiut, Egypt<br>
+                            Faculty of Computer Science<br>
+                            Assiut University
+                        </address>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="box">
+                    <div class="content">
+                        <h1>Get In Touch</h1>
+                        <p>Have questions about MediScan? Want to learn more about our AI-powered medication management?
+                            Drop us a message and we'll get back to you as soon as possible!</p>
+                    </div>
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <strong>{% if message.tags == 'success' %}✓{% else %}✗{% endif %}</strong>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form action="" method="POST" id="contactForm">
+                        {% csrf_token %}
+                        <input type="text" name="name" placeholder="Your Full Name" required>
+                        <input type="email" name="email" placeholder="Your Email Address" required>
+                        <textarea name="message" placeholder="Leave Your Message..." required></textarea>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static 'js/all.min.js' %}"></script>
+        <script>
+            // Add loading state to button on submit
+            document.getElementById( 'contactForm' ).addEventListener( 'submit', function ( e )
+            {
+                const btn = this.querySelector( '.btn' );
+                btn.classList.add( 'loading' );
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            } );
+        </script>
+    </div>
+
+</html>

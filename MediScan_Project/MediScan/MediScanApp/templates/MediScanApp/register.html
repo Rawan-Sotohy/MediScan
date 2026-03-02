@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description"content="Join Thousands Of Users Imporoving Therir Health With AI-Powerd Tool.">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta http-equiv="X-UA-Compatible" content="IE=7">
+        <title>MediScan</title>
+        <link rel="stylesheet" href="{%  static 'css/normalize.css' %}">
+        <link rel="stylesheet" href="{%  static 'css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="shortcut icon" href="{% static 'img/logo-2.png' %}" type="image/x-icon">
+    </head>
+    <body>
+        <section class="register-container">
+            <form method="POST">
+                {% csrf_token %}
+                <!-- <div class="logo">
+                    <img src="img/logo-2.png" alt="LOGO-image">
+                </div> -->
+                <h1>Create Account</h1>
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+                {% endif %}
+                <div class="feild">
+                    <label for="name">Full Name:</label>
+                    <input type="text" name="name" id="name">
+                </div>
+                <div class="feild">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email">
+                </div>
+                <div class="feild">
+                    <label for="phone">Phone Number:</label>
+                    <input type="text" name="phone" id="phone">
+                </div>
+                <div class="form-group">
+                    <label for="patientGender">Gender</label>
+                    <div class="gender-select">
+                        <label class="gender-option gender-option--male">
+                            <input type="radio" name="Gender" value="male" required>
+                            <span class="gender-icon"><i class="fas fa-mars"></i></span>
+                            <span class="gender-label">Male</span>
+                        </label>
+                        <label class="gender-option gender-option--female">
+                            <input type="radio" name="Gender" value="female" required>
+                            <span class="gender-icon"><i class="fas fa-venus"></i></span>
+                            <span class="gender-label">Female</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="feild">
+                    <label for="age">Age:</label>
+                    <input type="text" name="age" id="age">
+                </div>
+                <div class="feild">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password">
+                </div>
+                <input type="submit" value="Create Account">
+                <p>Already Have An Account?<a href="{% url 'login' %}">Login</a></p>
+            </form>
+        </section>
+        <script src="{% static 'js/all.min.js' %}"></script>
+        <script src="{% static 'js/main.js' %}"></script>
+    </body>
+</html>
