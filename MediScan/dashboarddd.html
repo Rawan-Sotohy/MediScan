@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediScan</title>
+    <link rel="stylesheet" href="css/dashborad.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">MediScan<span>AI</span></h2>
+
+        <ul class="nav">
+            <li onclick="showPage('settings')">⚙ Settings</li>
+            <li onclick="showPage('notifications')">🔔 Notifications</li>
+            <li onclick="showPage('medication')">💊 Medication Plan</li>
+        </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main id="content">
+
+        <!-- SETTINGS PAGE -->
+        <section id="settings" class="page active">
+            <h1>Settings</h1>
+
+            <div class="card">
+                <h2>Profile Information</h2>
+                <label>Full Name</label>
+                <input type="text" placeholder="Enter your name">
+
+                <label>Email</label>
+                <input type="email" placeholder="example@mail.com">
+
+                <label>Password</label>
+                <input type="password" placeholder="••••••••">
+
+                <button class="save-btn">Save Changes</button>
+            </div>
+
+            <div class="card">
+                <h2>Preferences</h2>
+                <div class="toggle-item">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="darkToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-item">
+                    <span>Enable Notifications</span>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-item">
+                    <span>Email Updates</span>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOTIFICATIONS PAGE -->
+        <section id="notifications" class="page">
+            <h1>Notifications</h1>
+            
+            <div id="notificationList" class="notification-list">
+                <!-- JS will inject notifications -->
+            </div>
+        </section>
+
+        <!-- MEDICATION PLAN PAGE -->
+        <section id="medication" class="page">
+            <h1>Medication Plan</h1>
+
+            <div class="card">
+                <h2>Today's Schedule</h2>
+
+                <div class="med-item">
+                    <div>
+                        <h3>Amoxicillin 500mg</h3>
+                        <p>1 pill — After breakfast</p>
+                    </div>
+                    <button class="take-btn" onclick="markTaken(this)">Take</button>
+                </div>
+
+                <div class="med-item">
+                    <div>
+                        <h3>Vitamin D</h3>
+                        <p>1 pill — Afternoon</p>
+                    </div>
+                    <button class="take-btn" onclick="markTaken(this)">Take</button>
+                </div>
+
+                <div class="med-item">
+                    <div>
+                        <h3>Ibuprofen 200mg</h3>
+                        <p>1 pill — Before sleep</p>
+                    </div>
+                    <button class="take-btn" onclick="markTaken(this)">Take</button>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <h2>Add New Medication</h2>
+
+                <label>Medication Name</label>
+                <input type="text" id="medName">
+
+                <label>Dosage</label>
+                <input type="text" id="medDose" placeholder="e.g. 500mg">
+
+                <label>Instructions</label>
+                <input type="text" id="medInstructions" placeholder="Before food, morning...">
+
+                <button class="save-btn" onclick="addMedication()">Add Medication</button>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

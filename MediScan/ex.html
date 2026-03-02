@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extract Page</title>
+<style>
+  /* Reset & basic styles */
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+  body { background: #f0f2f5; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+  
+  /* Container */
+  .extract-container {
+    background: #fff;
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    position: relative;
+  }
+
+  h1 { margin-bottom: 20px; color: #4a90e2; }
+
+  /* Input & button */
+  .input-box { width: 100%; padding: 12px 15px; margin-bottom: 20px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px; }
+  .extract-btn {
+    padding: 12px 25px;
+    background: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .extract-btn:hover { background: #357abd; }
+
+  /* Loading */
+  .loading {
+    display: none;
+    margin-top: 20px;
+  }
+  .loading span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin: 0 5px;
+    background: #4a90e2;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+  }
+  .loading span:nth-child(2) { animation-delay: 0.2s; }
+  .loading span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    to { transform: translateY(-15px); opacity: 0.5; }
+  }
+
+  /* Result */
+  .result {
+    margin-top: 20px;
+    background: #eaf1ff;
+    padding: 15px;
+    border-radius: 10px;
+    word-wrap: break-word;
+    display: none;
+  }
+
+
+</style>
+</head>
+<body>
+
+<div class="extract-container">
+  <h1>Data Extractor</h1>
+  <input type="text" placeholder="Enter text to extract..." class="input-box" id="inputText">
+  <button class="extract-btn" id="extractBtn">Extract</button>
+
+  <div class="loading" id="loading">
+    <span></span><span></span><span></span>
+  </div>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+const extractBtn = document.getElementById('extractBtn');
+const inputText = document.getElementById('inputText');
+const loading = document.getElementById('loading');
+const result = document.getElementById('result');
+
+extractBtn.addEventListener('click', () => {
+  const text = inputText.value.trim();
+  if (!text) {
+    alert('Please enter some text!');
+    return;
+  }
+
+  // Show loading
+  result.style.display = 'none';
+  loading.style.display = 'block';
+
+  // Simulate extraction delay
+  setTimeout(() => {
+    // Example extraction: return words longer than 4 letters
+    const extracted = text.split(' ').filter(word => word.length > 4).join(', ');
+    loading.style.display = 'none';
+    result.style.display = 'block';
+    result.textContent = extracted || 'No results found';
+  }, 1500);
+});
+</script>
+
+</body>
+</html>
+
