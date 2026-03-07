@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description"content="Join Thousands Of Users Imporoving Therir Health With AI-Powerd Tool.">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta http-equiv="X-UA-Compatible" content="IE=7">
+        <title>MediScan</title>
+    <link rel="stylesheet" href="{%  static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{%  static 'css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/logo-2.png' %}" type="image/x-icon">
+    </head>
+    <body>
+        <header class="home-header">
+            <div class="container">
+                <div class="logo">
+                    <a href="{% url 'home' %}"><img src="{% static 'img/logo-2.png' %}" alt="LOGO-image"></a>
+                </div>
+                <div class="links">
+                    <a href="{% url 'home' %}" class="back-home"><i class="fa fa-arrow-left" aria-hidden="true"></i>Back</a>
+                    <a href="{% url 'logout' %}" class="logout">
+                        <i class="fa fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </header>
+        <div class="contact">
+            <div class="container">
+                <div class="info">
+                    <div class="phone">
+                    <i class=" call fa fa-phone"></i>
+                        <p>0039 3476 1355</p>
+                        <span>Customer Services</span>
+                    </div>
+                    <div class="location">
+                        <i class="loc fas fa-location-dot"></i>
+                        <address>
+                            Egypt, Address 350Fth <br>
+                            Assuit, 34th Floor
+                        </address>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="content">
+                        <h1>Get In Touch</h1>
+                        <p>Lorem ipsum dolor sit amet consectetur elit. Dolorum voluptate alias ex nobis 
+                        </p>
+                    </div>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                        {% endif %}
+                        <input type="text" name="name" placeholder="Name">
+                        <input type="email" name="email" placeholder="Email Address">
+                        <textarea name="message" placeholder="Leave Your Message..."></textarea>
+                        <button class="btn">Send It Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

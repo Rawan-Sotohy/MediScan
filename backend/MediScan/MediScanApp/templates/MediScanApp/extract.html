@@ -1,0 +1,564 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MediScan - Extraction Complete</title>
+        <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="shortcut icon" href="{% static 'img/logo-2.png' %}" type="image/x-icon">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Inter', 'Segoe UI', sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+
+            .extract {
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+
+            /* Header Section */
+            .header-section {
+                text-align: center;
+                margin-bottom: 40px;
+                animation: fadeInDown 0.6s ease-out;
+            }
+
+            @keyframes fadeInDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .title {
+                color: white;
+                font-size: 42px;
+                font-weight: 800;
+                margin-bottom: 15px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .title i {
+                color: #22c55e;
+                font-size: 48px;
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+
+            .subtitle {
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 20px;
+            }
+
+            /* Prescription Card */
+            .prescription-card {
+                background: white;
+                border-radius: 25px;
+                padding: 35px;
+                margin-bottom: 30px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                animation: fadeInUp 0.6s ease-out;
+                position: relative;
+                overflow: hidden;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .prescription-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5px;
+                background: linear-gradient(90deg, #667eea, #764ba2);
+            }
+
+            /* Card Header */
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .prescription-date {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: #667eea;
+                font-weight: 600;
+                font-size: 16px;
+            }
+
+            .medication-count {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 8px 20px;
+                border-radius: 20px;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            /* Medications Container */
+            .medications-container {
+                max-height: 600px;
+                overflow: hidden;
+                transition: max-height 0.5s ease;
+            }
+
+            .medications-container.expanded {
+                max-height: none;
+            }
+
+            /* Individual Medication */
+            .medication-item {
+                background: #f8f9fa;
+                border-radius: 15px;
+                padding: 20px;
+                margin-bottom: 20px;
+                border-left: 4px solid #667eea;
+                transition: all 0.3s ease;
+            }
+
+            .medication-item:hover {
+                background: white;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+                transform: translateX(5px);
+            }
+
+            .medication-name {
+                font-size: 24px;
+                font-weight: 700;
+                color: #333;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .medication-name i {
+                color: #667eea;
+            }
+
+            /* Medication Details Grid */
+            .details-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+
+            .detail-item {
+                padding: 15px;
+                border-radius: 12px;
+                transition: all 0.3s ease;
+            }
+
+            .detail-item:hover {
+                transform: scale(1.05);
+            }
+
+            .detail-item.green {
+                background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+                border-left: 3px solid #4caf50;
+            }
+
+            .detail-item.blue {
+                background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                border-left: 3px solid #2196f3;
+            }
+
+            .detail-item.red {
+                background: linear-gradient(135deg, #ffebee, #ffcdd2);
+                border-left: 3px solid #f44336;
+            }
+
+            .detail-item.orange {
+                background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+                border-left: 3px solid #ff9800;
+            }
+
+            .detail-item i {
+                font-size: 20px;
+                margin-bottom: 8px;
+            }
+
+            .detail-item.green i {
+                color: #4caf50;
+            }
+
+            .detail-item.blue i {
+                color: #2196f3;
+            }
+
+            .detail-item.red i {
+                color: #f44336;
+            }
+
+            .detail-item.orange i {
+                color: #ff9800;
+            }
+
+            .detail-item h3 {
+                font-size: 12px;
+                color: #666;
+                margin-bottom: 5px;
+                text-transform: uppercase;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+            }
+
+            .detail-item span {
+                font-size: 16px;
+                font-weight: 700;
+                color: #333;
+                display: block;
+            }
+
+            /* Read More Button */
+            .read-more-btn {
+                width: 100%;
+                padding: 12px;
+                margin-top: 20px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .read-more-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            }
+
+            .read-more-btn i {
+                transition: transform 0.3s ease;
+            }
+
+            .read-more-btn.expanded i {
+                transform: rotate(180deg);
+            }
+
+            /* Action Buttons */
+            .action {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin-top: 30px;
+            }
+
+            .action a {
+                padding: 16px 30px;
+                border-radius: 12px;
+                text-decoration: none;
+                font-weight: 700;
+                text-align: center;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .save-btn {
+                background: linear-gradient(135deg, #22c55e, #16a34a);
+                color: white;
+            }
+
+            .retry-btn {
+                background: linear-gradient(135deg, #f59e0b, #d97706);
+                color: white;
+            }
+
+            .back-btn {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+            }
+
+            .view-btn {
+                background: linear-gradient(135deg, #3b82f6, #2563eb);
+                color: white;
+            }
+
+            .action a:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Empty State */
+            .empty-state {
+                background: white;
+                border-radius: 25px;
+                padding: 60px;
+                text-align: center;
+            }
+
+            .empty-state i {
+                font-size: 80px;
+                color: #ddd;
+                margin-bottom: 20px;
+            }
+
+            .empty-state h3 {
+                font-size: 28px;
+                color: #333;
+                margin-bottom: 15px;
+            }
+
+            .empty-state p {
+                color: #666;
+                font-size: 16px;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .title {
+                    font-size: 32px;
+                }
+
+                .details-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .action {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="extract">
+            <!-- Header -->
+            <div class="header-section">
+                <h1 class="title">
+                    <i class="fas fa-check-circle"></i>
+                    AI Extraction Complete
+                </h1>
+                <p class="subtitle">Here Are The Medicines Detected From Your Prescription</p>
+            </div>
+
+            <!-- Prescription Card -->
+            {% if medications %}
+            <div class="prescription-card">
+                <!-- Card Header -->
+                <div class="card-header">
+                    <div class="prescription-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        Uploaded: {{ prescription.uploaded_at|date:"d M, Y" }}
+                    </div>
+                    <div class="medication-count">
+                        <i class="fas fa-pills"></i>
+                        {{ medications|length }} Medication{{ medications|length|pluralize }}
+                    </div>
+                </div>
+
+                <!-- Medications Container (shows first 3, rest hidden) -->
+                <div class="medications-container" id="medicationsContainer">
+                    {% for med in medications %}
+                    <div class="medication-item">
+                        <div class="medication-name">
+                            <i class="fas fa-capsules"></i>
+                            {{ med.medicine_name }}
+                        </div>
+
+                        <div class="details-grid">
+                            {% if med.dosage %}
+                            <div class="detail-item green">
+                                <i class="fas fa-weight-hanging"></i>
+                                <h3>Dosage</h3>
+                                <span>{{ med.dosage }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if med.frequency %}
+                            <div class="detail-item blue">
+                                <i class="fas fa-clock"></i>
+                                <h3>Frequency</h3>
+                                <span>{{ med.frequency }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if med.duration %}
+                            <div class="detail-item red">
+                                <i class="fa fa-calendar"></i>
+                                <h3>Duration</h3>
+                                <span>{{ med.duration }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if med.notes %}
+                            <div class="detail-item orange">
+                                <i class="fas fa-notes-medical"></i>
+                                <h3>Notes</h3>
+                                <span>{{ med.notes }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Read More Button (only shows if more than 3 medications) -->
+                {% if medications|length > 3 %}
+                <button class="read-more-btn" id="readMoreBtn">
+                    <span id="btnText">Show All Medications</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                {% endif %}
+            </div>
+
+            {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <i class="fas fa-file-prescription"></i>
+                <h3>No Medications Detected</h3>
+                <p>The AI couldn't detect any medications. Please try uploading again.</p>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="action">
+                <a href="{% url 'save_prescription' prescription.id %}" class="save-btn">
+                    <i class="fas fa-save"></i> Save Record
+                </a>
+                <a href="{% url 'upload' %}" class="retry-btn">
+                    <i class="fas fa-redo"></i> Re-extract
+                </a>
+                <a href="{% url 'records' %}" class="view-btn">
+                    <i class="fas fa-list"></i> View All Records
+                </a>
+                <a href="{% url 'home' %}" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+
+        <script src="{% static 'js/all.min.js' %}"></script>
+        <script>
+            // Read More / Show Less functionality
+            const container = document.getElementById( 'medicationsContainer' );
+            const btn = document.getElementById( 'readMoreBtn' );
+            const btnText = document.getElementById( 'btnText' );
+            const medications = document.querySelectorAll( '.medication-item' );
+
+            // Hide medications after the 3rd one initially
+            if ( medications.length > 3 )
+            {
+                medications.forEach( ( med, index ) =>
+                {
+                    if ( index >= 3 )
+                    {
+                        med.style.display = 'none';
+                    }
+                } );
+            }
+
+            // Toggle Read More / Show Less
+            if ( btn )
+            {
+                btn.addEventListener( 'click', function ()
+                {
+                    const isExpanded = container.classList.contains( 'expanded' );
+
+                    if ( isExpanded )
+                    {
+                        // Collapse
+                        container.classList.remove( 'expanded' );
+                        btn.classList.remove( 'expanded' );
+                        btnText.textContent = 'Show All Medications';
+
+                        // Hide medications after 3rd
+                        medications.forEach( ( med, index ) =>
+                        {
+                            if ( index >= 3 )
+                            {
+                                med.style.display = 'none';
+                            }
+                        } );
+
+                        // Scroll to top of card
+                        document.querySelector( '.prescription-card' ).scrollIntoView( { behavior: 'smooth' } );
+                    } else
+                    {
+                        // Expand
+                        container.classList.add( 'expanded' );
+                        btn.classList.add( 'expanded' );
+                        btnText.textContent = 'Show Less';
+
+                        // Show all medications
+                        medications.forEach( med =>
+                        {
+                            med.style.display = 'block';
+                        } );
+                    }
+                } );
+            }
+
+            // Auto-save animation
+            const saveBtn = document.querySelector( '.save-btn' );
+            saveBtn.addEventListener( 'click', function ( e )
+            {
+                const icon = this.querySelector( 'i' );
+                icon.className = 'fas fa-spinner fa-spin';
+                setTimeout( () =>
+                {
+                    icon.className = 'fas fa-check';
+                }, 1500 );
+            } );
+        </script>
+    </body>
+
+</html>

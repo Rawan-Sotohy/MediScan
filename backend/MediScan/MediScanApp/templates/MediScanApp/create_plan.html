@@ -1,0 +1,818 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Create your personalized medication plan">
+        <title>Create Medication Plan - MediScan</title>
+        <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+        <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+        <link rel="shortcut icon" href="{% static 'img/logo-2.png' %}" type="image/x-icon">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+
+            .create-plan-container {
+                max-width: 900px;
+                margin: 0 auto;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 30px;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .btn-back {
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 10px;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s;
+                backdrop-filter: blur(10px);
+            }
+
+            .btn-back:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: translateX(-5px);
+            }
+
+            h1 {
+                color: white;
+                font-size: 2.5em;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                flex: 1;
+                text-align: center;
+            }
+
+            .form-container {
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            }
+
+            .step-indicator {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 40px;
+                position: relative;
+            }
+
+            .step-indicator::before {
+                content: '';
+                position: absolute;
+                top: 20px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background: #e0e0e0;
+                z-index: 0;
+            }
+
+            .step {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                position: relative;
+                z-index: 1;
+                flex: 1;
+            }
+
+            .step-number {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: #e0e0e0;
+                color: #999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-bottom: 10px;
+                transition: all 0.3s;
+            }
+
+            .step.active .step-number {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+
+            .step.completed .step-number {
+                background: #4caf50;
+                color: white;
+            }
+
+            .step-label {
+                font-size: 0.85em;
+                color: #999;
+                text-align: center;
+            }
+
+            .step.active .step-label {
+                color: #667eea;
+                font-weight: bold;
+            }
+
+            .form-step {
+                display: none;
+            }
+
+            .form-step.active {
+                display: block;
+                animation: fadeIn 0.5s;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .form-group {
+                margin-bottom: 25px;
+            }
+
+            .form-group label {
+                display: block;
+                color: #333;
+                font-weight: 600;
+                margin-bottom: 8px;
+                font-size: 0.95em;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                padding: 12px 15px;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                font-size: 1em;
+                transition: all 0.3s;
+            }
+
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+            .prescription-card {
+                border: 2px solid #e0e0e0;
+                border-radius: 15px;
+                padding: 20px;
+                margin-bottom: 15px;
+                cursor: pointer;
+                transition: all 0.3s;
+                position: relative;
+            }
+
+            .prescription-card:hover {
+                border-color: #667eea;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .prescription-card.selected {
+                border-color: #667eea;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e8eaf6 100%);
+            }
+
+            .prescription-card.selected::after {
+                content: '✓';
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 30px;
+                height: 30px;
+                background: #667eea;
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+
+            .prescription-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .prescription-id {
+                font-weight: bold;
+                color: #667eea;
+                font-size: 1.1em;
+            }
+
+            .prescription-date {
+                color: #999;
+                font-size: 0.9em;
+            }
+
+            .medication-list {
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid #e0e0e0;
+            }
+
+            .medication-item {
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 10px;
+                margin-bottom: 15px;
+                border-left: 4px solid #667eea;
+            }
+
+            .medication-name {
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 8px;
+                font-size: 1.05em;
+            }
+
+            .medication-details {
+                color: #666;
+                font-size: 0.9em;
+                margin-bottom: 10px;
+            }
+
+            .time-slots {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            .time-slot {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .time-slot input[type="time"] {
+                flex: 1;
+                padding: 8px;
+            }
+
+            .add-time-btn {
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.85em;
+                transition: all 0.3s;
+            }
+
+            .add-time-btn:hover {
+                background: #5568d3;
+            }
+
+            .remove-time-btn {
+                background: #f44336;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 0.8em;
+            }
+
+            .date-range {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+
+            .summary-section {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 15px;
+                margin-bottom: 20px;
+            }
+
+            .summary-section h3 {
+                color: #667eea;
+                margin-bottom: 15px;
+            }
+
+            .summary-item {
+                padding: 10px;
+                margin-bottom: 10px;
+                background: white;
+                border-radius: 8px;
+                border-left: 3px solid #667eea;
+            }
+
+            .button-group {
+                display: flex;
+                gap: 15px;
+                margin-top: 30px;
+            }
+
+            .btn {
+                flex: 1;
+                padding: 15px 30px;
+                border: none;
+                border-radius: 10px;
+                font-size: 1em;
+                cursor: pointer;
+                transition: all 0.3s;
+                font-weight: 600;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            }
+
+            .btn-secondary {
+                background: #e0e0e0;
+                color: #666;
+            }
+
+            .btn-secondary:hover {
+                background: #d0d0d0;
+            }
+
+            .alert {
+                padding: 15px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+            }
+
+            .alert-info {
+                background: #e3f2fd;
+                color: #1976d2;
+                border-left: 4px solid #1976d2;
+            }
+
+            .alert-warning {
+                background: #fff3e0;
+                color: #f57c00;
+                border-left: 4px solid #f57c00;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 60px 20px;
+                color: #999;
+            }
+
+            .empty-state i {
+                font-size: 4em;
+                margin-bottom: 20px;
+                opacity: 0.3;
+            }
+
+            .empty-state a {
+                display: inline-block;
+                margin-top: 20px;
+                padding: 12px 30px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                text-decoration: none;
+                border-radius: 10px;
+                transition: all 0.3s;
+            }
+
+            .empty-state a:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            }
+
+            @media (max-width: 768px) {
+                h1 {
+                    font-size: 1.8em;
+                }
+
+                .form-container {
+                    padding: 25px;
+                }
+
+                .step-label {
+                    font-size: 0.75em;
+                }
+
+                .date-range {
+                    grid-template-columns: 1fr;
+                }
+
+                .time-slots {
+                    grid-template-columns: 1fr;
+                }
+
+                .button-group {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="create-plan-container">
+            <div class="header">
+                <a href="{% url 'medication_plan' %}" class="btn-back">
+                    <i class="fa fa-arrow-left"></i> Back
+                </a>
+                <h1>Create Medication Plan</h1>
+                <div style="width: 100px;"></div>
+            </div>
+
+            <div class="form-container">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% if prescriptions %}
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step active" id="step-1-indicator">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Select Prescription</div>
+                    </div>
+                    <div class="step" id="step-2-indicator">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Set Schedule</div>
+                    </div>
+                    <div class="step" id="step-3-indicator">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Review & Confirm</div>
+                    </div>
+                </div>
+
+                <form method="POST" id="planForm">
+                    {% csrf_token %}
+
+                    <!-- Step 1: Select Prescription -->
+                    <div class="form-step active" id="step-1">
+                        <h2 style="margin-bottom: 20px; color: #333;">Choose a Prescription</h2>
+
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i>
+                            Select the prescription you want to create a medication plan for.
+                        </div>
+
+                        {% for prescription in prescriptions %}
+                        <div class="prescription-card" onclick="selectPrescription({{ prescription.id }})">
+                            <input type="radio" name="prescription_id" value="{{ prescription.id }}"
+                                           id="prescription-{{ prescription.id }}" style="display: none;">
+
+                            <div class="prescription-header">
+                                <span class="prescription-id">Prescription #{{ prescription.id }}</span>
+                                <span class="prescription-date">
+                                    {{ prescription.uploaded_at|date:"M d, Y" }}
+                                </span>
+                            </div>
+
+                            <div class="medication-list">
+                                <strong>Medications ({{ prescription.medications.count }}):</strong>
+                                {% for med in prescription.medications.all %}
+                                <div style="margin-top: 5px; color: #666;">
+                                    <i class="fa fa-pills"></i> {{ med.medicine_name }}
+                                    {% if med.dosage %}- {{ med.dosage }}{% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Step 2: Set Schedule -->
+                    <div class="form-step" id="step-2">
+                        <h2 style="margin-bottom: 20px; color: #333;">Set Your Schedule</h2>
+
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i>
+                            Set the duration and daily times for each medication.
+                        </div>
+
+                        <!-- Date Range -->
+                        <div class="date-range">
+                            <div class="form-group">
+                                <label for="start_date">
+                                    <i class="fa fa-calendar"></i> Start Date
+                                </label>
+                                <input type="date" id="start_date" name="start_date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="end_date">
+                                    <i class="fa fa-calendar"></i> End Date
+                                </label>
+                                <input type="date" id="end_date" name="end_date" required>
+                            </div>
+                        </div>
+
+                        <!-- Medication Times -->
+                        <div id="medicationSchedules">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Review -->
+                    <div class="form-step" id="step-3">
+                        <h2 style="margin-bottom: 20px; color: #333;">Review Your Plan</h2>
+
+                        <div class="summary-section">
+                            <h3><i class="fa fa-calendar-check"></i> Plan Duration</h3>
+                            <div class="summary-item">
+                                <strong>Start:</strong> <span id="summary-start"></span><br>
+                                <strong>End:</strong> <span id="summary-end"></span><br>
+                                <strong>Duration:</strong> <span id="summary-duration"></span> days
+                            </div>
+                        </div>
+
+                        <div class="summary-section">
+                            <h3><i class="fa fa-pills"></i> Medication Schedule</h3>
+                            <div id="summary-medications">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            <strong>Important:</strong> Make sure all times are correct. You'll receive notifications
+                            for each scheduled dose.
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)"
+                                       style="display: none;">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">
+                            <i class="fa fa-check"></i> Create Plan
+                        </button>
+                    </div>
+                </form>
+
+                {% else %}
+                <div class="empty-state">
+                    <i class="fa fa-file-prescription"></i>
+                    <h2>No Prescriptions Available</h2>
+                    <p>You need to upload and process a prescription first before creating a medication plan.</p>
+                    <a href="{% url 'upload' %}">
+                        <i class="fa fa-upload"></i> Upload Prescription
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <script src="{% static 'js/all.min.js' %}"></script>
+        <script>
+            let currentStep = 1;
+            let selectedPrescriptionId = null;
+            const totalSteps = 3;
+
+            // Set minimum date to today
+            document.addEventListener( 'DOMContentLoaded', function ()
+            {
+                const today = new Date().toISOString().split( 'T' )[ 0 ];
+                document.getElementById( 'start_date' ).min = today;
+                document.getElementById( 'end_date' ).min = today;
+            } );
+
+            function selectPrescription ( id )
+            {
+                // Remove previous selection
+                document.querySelectorAll( '.prescription-card' ).forEach( card =>
+                {
+                    card.classList.remove( 'selected' );
+                } );
+
+                // Select new prescription
+                const radio = document.getElementById( `prescription-${ id }` );
+                radio.checked = true;
+                radio.closest( '.prescription-card' ).classList.add( 'selected' );
+                selectedPrescriptionId = id;
+            }
+
+            function changeStep ( direction )
+            {
+                // Validation
+                if ( direction === 1 )
+                {
+                    if ( currentStep === 1 )
+                    {
+                        if ( !selectedPrescriptionId )
+                        {
+                            alert( 'Please select a prescription first.' );
+                            return;
+                        }
+                        loadMedicationSchedules();
+                    } else if ( currentStep === 2 )
+                    {
+                        if ( !validateStep2() )
+                        {
+                            return;
+                        }
+                        loadSummary();
+                    }
+                }
+
+                // Hide current step
+                document.getElementById( `step-${ currentStep }` ).classList.remove( 'active' );
+                document.getElementById( `step-${ currentStep }-indicator` ).classList.remove( 'active' );
+
+                if ( direction === 1 )
+                {
+                    document.getElementById( `step-${ currentStep }-indicator` ).classList.add( 'completed' );
+                }
+
+                // Update step
+                currentStep += direction;
+
+                // Show new step
+                document.getElementById( `step-${ currentStep }` ).classList.add( 'active' );
+                document.getElementById( `step-${ currentStep }-indicator` ).classList.add( 'active' );
+
+                // Update buttons
+                updateButtons();
+            }
+
+            function updateButtons ()
+            {
+                const prevBtn = document.getElementById( 'prevBtn' );
+                const nextBtn = document.getElementById( 'nextBtn' );
+                const submitBtn = document.getElementById( 'submitBtn' );
+
+                prevBtn.style.display = currentStep === 1 ? 'none' : 'block';
+                nextBtn.style.display = currentStep === totalSteps ? 'none' : 'block';
+                submitBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
+            }
+
+            function loadMedicationSchedules ()
+            {
+                const container = document.getElementById( 'medicationSchedules' );
+                const prescriptionCard = document.querySelector( '.prescription-card.selected' );
+                const medications = prescriptionCard.querySelectorAll( '.medication-list > div' );
+
+                container.innerHTML = '<h3 style="margin-bottom: 20px; color: #333;">Set Times for Each Medication</h3>';
+
+                medications.forEach( ( med, index ) =>
+                {
+                    const medName = med.textContent.trim();
+                    if ( medName && medName !== 'Medications:' )
+                    {
+                        const medId = index + 1;
+                        container.innerHTML += `
+                        <div class="medication-item">
+                            <div class="medication-name">${ medName }</div>
+                            <label style="margin-top: 10px; display: block; font-size: 0.9em;">Daily doses:</label>
+                            <div class="time-slots" id="time-slots-${ medId }">
+                                <div class="time-slot">
+                                    <input type="time" name="dose_time_${medId}[]" required>
+
+                                    <button type="button" class="remove-time-btn" onclick="removeTimeSlot(this)" style="display: none;">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="add-time-btn" onclick="addTimeSlot(${ medId })">
+                                <i class="fa fa-plus"></i> Add Another Time
+                            </button>
+                        </div>
+                    `;
+                    }
+                } );
+            }
+
+            function addTimeSlot ( medId )
+            {
+                const container = document.getElementById( `time-slots-${ medId }` );
+                const newSlot = document.createElement( 'div' );
+                newSlot.className = 'time-slot';
+                newSlot.innerHTML = `
+    <input type="time" name="dose_time_${ medId }[]" required>
+    <button type="button" class="remove-time-btn" onclick="removeTimeSlot(this)">
+        <i class="fa fa-times"></i>
+    </button>
+`;
+
+                container.appendChild( newSlot );
+            }
+
+            function removeTimeSlot ( btn )
+            {
+                btn.closest( '.time-slot' ).remove();
+            }
+
+            function validateStep2 ()
+            {
+                const startDate = document.getElementById( 'start_date' ).value;
+                const endDate = document.getElementById( 'end_date' ).value;
+
+                if ( !startDate || !endDate )
+                {
+                    alert( 'Please set both start and end dates.' );
+                    return false;
+                }
+
+                if ( new Date( endDate ) <= new Date( startDate ) )
+                {
+                    alert( 'End date must be after start date.' );
+                    return false;
+                }
+
+                return true;
+            }
+
+            function loadSummary ()
+            {
+                const startDate = document.getElementById( 'start_date' ).value;
+                const endDate = document.getElementById( 'end_date' ).value;
+                const start = new Date( startDate );
+                const end = new Date( endDate );
+                const duration = Math.ceil( ( end - start ) / ( 1000 * 60 * 60 * 24 ) );
+
+                document.getElementById( 'summary-start' ).textContent = start.toLocaleDateString( 'en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                } );
+                document.getElementById( 'summary-end' ).textContent = end.toLocaleDateString( 'en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                } );
+                document.getElementById( 'summary-duration' ).textContent = duration;
+
+                // Load medication summary
+                const summaryContainer = document.getElementById( 'summary-medications' );
+                const medications = document.querySelectorAll( '.medication-item' );
+                summaryContainer.innerHTML = '';
+
+                medications.forEach( med =>
+                {
+                    const medName = med.querySelector( '.medication-name' ).textContent;
+                    const times = Array.from( med.querySelectorAll( 'input[type="time"]' ) )
+                        .map( input => input.value )
+                        .filter( time => time );
+
+                    summaryContainer.innerHTML += `
+                    <div class="summary-item">
+                        <strong>${ medName }</strong><br>
+                        <span style="color: #666;">
+                            ${ times.map( time =>
+                    {
+                        const [ hours, minutes ] = time.split( ':' );
+                        const date = new Date();
+                        date.setHours( hours, minutes );
+                        return date.toLocaleTimeString( 'en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                        } );
+                    } ).join( ', ' ) }
+                        </span>
+                    </div>
+                `;
+                } );
+            }
+        </script>
+    </body>
+
+</html>

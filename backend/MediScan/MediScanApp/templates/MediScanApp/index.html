@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Join Thousands Of Users Imporoving Therir Health With AI-Powerd Tool.">
+    <title>MediScan</title>
+    <link rel="stylesheet" href="{%  static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{%  static 'css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/logo-2.png' %}" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <div class="content">
+            <div class="nav">
+                <div class="click">
+                    <i class="fas fa-bars fa-2x" id="icon"></i>
+                </div>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#feature">Feature</a></li>
+                    <li><a href="{% url 'records' %}">Records</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                    <li><a href="{% url 'settings' %}">Setting</a></li>
+                    <li><a href="{% url 'notifications' %}">Notification</a></li>
+                </ul>
+                <div class="logo">
+                    <img src="{% static 'img/logo-2.png' %}" alt="LOGO-image">
+                </div>
+            </div>
+            <div class="search">
+                <input type="search" name="search" placeholder="Search...">
+                <div class="icon fas fa-search"></div>
+            </div>
+            <div class="info">
+                <a href="{% url 'notifications' %}" class="not">
+                    <div class="notification">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </a>
+                <a href="{% url 'settings' %}">
+                <div class="setting">
+                    <i class="fas fa-cog"></i>
+                </div></a>
+                <div class="dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="image">
+                    
+                    {% if request.user.avater %}
+                        <a href="{% url 'profile' %}" class="pro"> <img src="{{request.user.avater.url}}" alt="Profile-image"></a>
+                        {% else %}
+                    <a href="{% url 'profile' %}" class="pro"> <img src="{% static 'img/profile.jpg' %}" alt="Profile-image"></a>
+                    {% endif %}
+                        
+                    
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="landing">
+        <div class="text">
+            <h3>Your Smart Medication Assistant</h3>
+            <p>Upload Your Prescription, Get Your Medical</p>
+            <a class="btn-primary" href="{% url 'homePage' %}">Get Started</a>
+        </div>
+    </div>
+    <div class="about lazy-section" id="about">
+        <h2 class="special-title">About Us</h2>
+        <div class="container">
+            <div class="content">
+                <p>MediScan revolutionizes medication management using cutting-edge AI technology. We help thousands of users stay on track
+                with their prescriptions, never miss a dose, and maintain better health through smart, automated reminders and
+                personalized medication plans.</p>
+            </div>
+            <div class="image">
+                <img src="{% static 'img/about-back.png' %}" loading="lazy" alt="About-bac">
+                </div>
+                
+        </div>
+    </div>
+    <section class="feature lazy-section" id="feature">
+        <h2 class="title"> Our Features</h2>
+        <div class="container">
+            <div class="box blue">
+                <i class="fas fa-book-medical fa-2x"></i>
+                <h3>Prescription Upload & Extract</h3>
+                <p>Upload Your Prescription And Automatically Extract Medicine Names,Dosages,And Schedules. </p>
+            </div>
+            <div class="box red">
+                <i class="fas fa-calendar-days fa-2x"></i>
+                <h3>Auto Medication Plan</h3>
+                <p>Get A Clear Daily Or Weekly Medication Plan Optimized For Your Health Need.</p>
+            </div>
+            <div class="box orange">
+                <i class="fas fa-bell fa-2x"></i>
+                <h3>Smart Reminders</h3>
+                <p>Never Miss A Does With Accurate And Timely Reminders.</p>
+            </div>
+            <div class="box green">
+                <i class="fas fa-message fa-2x"></i>
+                <h3>Ai Chatbot Assistant</h3>
+                <p>Ask Question About Medication Or Instructions Directly.</p>
+            </div>
+        </div>
+    </section>
+    <div class="how-section lazy-section">
+        <h3>How  <span> MediScan </span>   Works</h3>
+        <div class="container">
+            <div class="boxs">
+                <div class="box">
+                    
+                    <h3>Upload Your Prescription</h3>
+                    <p>Upload Your Prescription</p>
+                </div>
+                <div class="box">
+                    
+                    <h3>AI Extracts Medication & Doeses</h3>
+                    <p>AI Extracts Medication & Doeses</p>
+                </div>
+                <div class="box">
+                    
+                    <h3>Recive Your Medication Plan + Reminders</h3>
+                    <p>Recive Your Medication Plan + Reminders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="call lazy-section">
+        <div class="container">
+            <h3>Ready To Manage Your Health Smarter?</h3>
+            <a href="{% url 'login' %}">Join MediScan Today</a>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="logo">
+                <img src="{% static 'img/logo-2.png' %}" alt="">
+            </div>
+            <div class="links">
+                <h3>Quick links</h3>
+                <ul>
+                    <li><a href="{% url 'home' %}"><i class="fas fa-angle-double-right"></i>Home</a></li>
+                    <li><a href="#feature"><i class="fas fa-angle-double-right"></i>Feature</a></li>
+                    <li><a href="{% url 'login' %}"><i class="fas fa-angle-double-right"></i>Login</a></li>
+                    <li><a href="{% url 'contact' %}"><i class="fas fa-angle-double-right"></i>Contact</a></li>
+                </ul>
+            </div>
+            <div class="support">
+                <h3>Support:</h3>
+                    <ul>
+                        <li><a href="#">Terms</a></li>
+                        <li><a href="#">Privacy</li>    
+                    </ul>
+            </div>
+        </div>
+        <p>
+            &copy;<span class="year">2025</span> <span> MediScan </span>All Right Reserved
+        </p>
+    </footer>
+    <script src="{% static 'js/all.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

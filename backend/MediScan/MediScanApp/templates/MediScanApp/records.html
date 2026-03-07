@@ -1,0 +1,738 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MediScan - Medication Records</title>
+        <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="shortcut icon" href="{% static 'img/logo-2.png' %}" type="image/x-icon">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Inter', 'Segoe UI', sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+
+            .record {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            /* Header */
+            .header-section {
+                display: flex;
+                align-items: center;
+                gap: 25px;
+                margin-bottom: 40px;
+                animation: fadeInDown 0.6s ease-out;
+            }
+
+            @keyframes fadeInDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .btn-back {
+                width: 55px;
+                height: 55px;
+                background: rgba(255, 255, 255, 0.95);
+                color: #667eea;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            .btn-back:hover {
+                transform: translateY(-3px) scale(1.05);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            }
+
+            .title {
+                color: white;
+                font-size: 36px;
+                font-weight: 800;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                flex: 1;
+            }
+
+            /* Filter & Search */
+            .filters {
+                background: rgba(255, 255, 255, 0.95);
+                padding: 25px;
+                border-radius: 20px;
+                margin-bottom: 30px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .search-box {
+                position: relative;
+            }
+
+            .search-box input {
+                width: 100%;
+                padding: 12px 20px 12px 45px;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                font-size: 15px;
+                transition: all 0.3s ease;
+            }
+
+            .search-box input:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            }
+
+            .search-box i {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #667eea;
+            }
+
+            /* Prescription Card */
+            .box {
+                background: rgba(255, 255, 255, 0.98);
+                border-radius: 25px;
+                padding: 35px;
+                margin-bottom: 30px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+                transition: all 0.4s ease;
+                animation: fadeInUp 0.6s ease-out;
+                position: relative;
+                overflow: hidden;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .box:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            }
+
+            .box::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 5px;
+                background: linear-gradient(90deg, #667eea, #764ba2);
+            }
+
+            /* Prescription Header */
+            .prescription-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .prescription-id {
+                font-size: 16px;
+                color: #667eea;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .prescription-date {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 8px 20px;
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: 600;
+            }
+
+            .medication-count {
+                background: rgba(102, 126, 234, 0.1);
+                color: #667eea;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 700;
+                margin-left: 15px;
+            }
+
+            /* Medications Container */
+            .medications-wrapper {
+                position: relative;
+            }
+
+            .medications-container {
+                max-height: 500px;
+                overflow: hidden;
+                transition: max-height 0.5s ease;
+            }
+
+            .medications-container.expanded {
+                max-height: none;
+            }
+
+            /* Individual Medication */
+            .medicin {
+                background: #f8f9fa;
+                border-radius: 15px;
+                padding: 20px;
+                margin-bottom: 15px;
+                transition: all 0.3s ease;
+                border-left: 4px solid #667eea;
+            }
+
+            .medicin:hover {
+                background: #fff;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+                transform: translateX(5px);
+            }
+
+            .medicin .name {
+                font-size: 22px;
+                font-weight: 700;
+                color: #333;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .medicin .name i {
+                color: #667eea;
+                font-size: 24px;
+            }
+
+            /* Medicine Details Grid */
+            .cont {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .content {
+                padding: 12px;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+            }
+
+            .content:hover {
+                transform: scale(1.05);
+            }
+
+            .content.green {
+                background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+                border-left: 3px solid #4caf50;
+            }
+
+            .content.blue {
+                background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                border-left: 3px solid #2196f3;
+            }
+
+            .content.red {
+                background: linear-gradient(135deg, #ffebee, #ffcdd2);
+                border-left: 3px solid #f44336;
+            }
+
+            .content.orange {
+                background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+                border-left: 3px solid #ff9800;
+            }
+
+            .content i {
+                font-size: 18px;
+                margin-bottom: 5px;
+            }
+
+            .content.green i {
+                color: #4caf50;
+            }
+
+            .content.blue i {
+                color: #2196f3;
+            }
+
+            .content.red i {
+                color: #f44336;
+            }
+
+            .content.orange i {
+                color: #ff9800;
+            }
+
+            .content h3 {
+                font-size: 12px;
+                font-weight: 600;
+                color: #666;
+                margin: 5px 0;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .content span {
+                font-size: 15px;
+                font-weight: 700;
+                color: #333;
+                display: block;
+            }
+
+            /* Read More Button */
+            .read-more-btn {
+                width: 100%;
+                padding: 12px;
+                margin-top: 15px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .read-more-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            }
+
+            .read-more-btn i {
+                transition: transform 0.3s ease;
+            }
+
+            .read-more-btn.expanded i {
+                transform: rotate(180deg);
+            }
+
+            /* Action Buttons */
+            .action {
+                display: flex;
+                gap: 12px;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 2px solid #f0f0f0;
+            }
+
+            .action a {
+                flex: 1;
+                padding: 12px 20px;
+                border-radius: 10px;
+                text-decoration: none;
+                font-weight: 700;
+                text-align: center;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .delete {
+                background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+                color: white;
+            }
+
+            .delete:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(238, 90, 111, 0.4);
+            }
+
+            .download {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+            }
+
+            .download:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            }
+
+            /* Empty State */
+            .empty-state {
+                text-align: center;
+                padding: 80px 20px;
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 25px;
+            }
+
+            .empty-state i {
+                font-size: 80px;
+                color: #ddd;
+                margin-bottom: 20px;
+            }
+
+            .empty-state h3 {
+                font-size: 28px;
+                color: #333;
+                margin-bottom: 15px;
+            }
+
+            .empty-state p {
+                color: #666;
+                font-size: 16px;
+            }
+
+            /* Delete Modal */
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .modal.active {
+                display: flex;
+            }
+
+            .modal-content {
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                max-width: 450px;
+                width: 90%;
+                text-align: center;
+                animation: scaleIn 0.3s ease-out;
+            }
+
+            @keyframes scaleIn {
+                from {
+                    transform: scale(0.8);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            .modal-content i {
+                font-size: 60px;
+                color: #ff6b6b;
+                margin-bottom: 20px;
+            }
+
+            .modal-content h3 {
+                font-size: 24px;
+                color: #333;
+                margin-bottom: 15px;
+            }
+
+            .modal-content p {
+                color: #666;
+                margin-bottom: 30px;
+            }
+
+            .modal-buttons {
+                display: flex;
+                gap: 15px;
+            }
+
+            .modal-buttons button {
+                flex: 1;
+                padding: 14px;
+                border: none;
+                border-radius: 10px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .btn-cancel {
+                background: #e0e0e0;
+                color: #333;
+            }
+
+            .btn-confirm-delete {
+                background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+                color: white;
+            }
+
+            .btn-confirm-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(238, 90, 111, 0.4);
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .title {
+                    font-size: 24px;
+                }
+
+                .cont {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="record">
+            <!-- Header -->
+            <div class="header-section">
+                <a href="{% url 'home' %}" class="btn-back">
+                    <i class="fa fa-arrow-left"></i>
+                </a>
+                <h1 class="title">Medication Records</h1>
+            </div>
+
+            <!-- Filters & Search -->
+            <div class="filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search by medicine name...">
+                </div>
+            </div>
+
+            <!-- Records Container -->
+            {% if prescriptions %}
+            {% for prescription in prescriptions %}
+            <div class="box" data-prescription-id="{{ prescription.id }}">
+                <!-- Prescription Header -->
+                <div class="prescription-header">
+                    <div class="prescription-id">
+                        <i class="fas fa-file-prescription"></i>
+                        Prescription #{{ prescription.id }}
+                        <span class="medication-count">
+                            {{ prescription.medications.count }}
+                            Medication{{ prescription.medications.count|pluralize }}
+                        </span>
+                    </div>
+                    <span class="prescription-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        {{ prescription.uploaded_at|date:"d M, Y" }}
+                    </span>
+                </div>
+
+                <!-- Medications Container -->
+                <div class="medications-wrapper">
+                    <div class="medications-container" id="container-{{ prescription.id }}">
+                        {% for medication in prescription.medications.all %}
+                        <div class="medicin">
+                            <div class="name">
+                                <i class="fas fa-capsules"></i>
+                                {{ medication.medicine_name }}
+                            </div>
+                            <div class="cont">
+                                <div class="content green">
+                                    <i class="fas fa-weight-hanging"></i>
+                                    <h3>Dosage</h3>
+                                    <span>{{ medication.dosage|default:"N/A" }}</span>
+                                </div>
+                                <div class="content blue">
+                                    <i class="fas fa-clock"></i>
+                                    <h3>Frequency</h3>
+                                    <span>{{ medication.frequency|default:"N/A" }}</span>
+                                </div>
+                                <div class="content red">
+                                    <i class="fa fa-calendar"></i>
+                                    <h3>Duration</h3>
+                                    <span>{{ medication.duration|default:"N/A" }}</span>
+                                </div>
+                                <div class="content orange">
+                                    <i class="fas fa-notes-medical"></i>
+                                    <h3>Note</h3>
+                                    <span>{{ medication.notes|default:"No notes" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Read More Button (only if more than 3 medications) -->
+                    {% if prescription.medications.count > 3 %}
+                    <button class="read-more-btn" data-prescription="{{ prescription.id }}">
+                        <span class="btn-text">Show All Medications</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action">
+                    <a href="#" class="delete" onclick="confirmDelete({{ prescription.id }}); return false;">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                    <a href="{% url 'download_prescription' prescription.id %}" class="download">
+                        <i class="fa fa-download"></i> Download
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-file-prescription"></i>
+                <h3>No Records Yet</h3>
+                <p>Upload your first prescription to get started!</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal" id="deleteModal">
+            <div class="modal-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Delete Prescription?</h3>
+                <p>Are you sure you want to delete this prescription record? This action cannot be undone.</p>
+                <div class="modal-buttons">
+                    <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                    <form method="POST" action="" id="deleteForm" style="flex: 1;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-confirm-delete" style="width: 100%;">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static 'js/all.min.js' %}"></script>
+        <script>
+            // Search Functionality
+            const searchInput = document.getElementById( 'searchInput' );
+            searchInput.addEventListener( 'input', function ()
+            {
+                const searchTerm = this.value.toLowerCase();
+                const boxes = document.querySelectorAll( '.box' );
+
+                boxes.forEach( box =>
+                {
+                    const medicineNames = box.querySelectorAll( '.medicin .name' );
+                    let found = false;
+
+                    medicineNames.forEach( name =>
+                    {
+                        if ( name.textContent.toLowerCase().includes( searchTerm ) )
+                        {
+                            found = true;
+                        }
+                    } );
+
+                    box.style.display = found ? 'block' : 'none';
+                } );
+            } );
+
+            // Read More / Show Less Functionality
+            document.querySelectorAll( '.read-more-btn' ).forEach( btn =>
+            {
+                const prescriptionId = btn.getAttribute( 'data-prescription' );
+                const container = document.getElementById( `container-${ prescriptionId }` );
+                const medications = container.querySelectorAll( '.medicin' );
+
+                // Hide medications after the 3rd one initially
+                medications.forEach( ( med, index ) =>
+                {
+                    if ( index >= 3 )
+                    {
+                        med.style.display = 'none';
+                    }
+                } );
+
+                // Toggle Read More / Show Less
+                btn.addEventListener( 'click', function ()
+                {
+                    const isExpanded = container.classList.contains( 'expanded' );
+                    const btnText = this.querySelector( '.btn-text' );
+                    const icon = this.querySelector( 'i' );
+
+                    if ( isExpanded )
+                    {
+                        // Collapse
+                        container.classList.remove( 'expanded' );
+                        this.classList.remove( 'expanded' );
+                        btnText.textContent = 'Show All Medications';
+
+                        // Hide medications after 3rd
+                        medications.forEach( ( med, index ) =>
+                        {
+                            if ( index >= 3 )
+                            {
+                                med.style.display = 'none';
+                            }
+                        } );
+
+                        // Scroll to prescription card
+                        this.closest( '.box' ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
+                    } else
+                    {
+                        // Expand
+                        container.classList.add( 'expanded' );
+                        this.classList.add( 'expanded' );
+                        btnText.textContent = 'Show Less';
+
+                        // Show all medications
+                        medications.forEach( med =>
+                        {
+                            med.style.display = 'block';
+                        } );
+                    }
+                } );
+            } );
+
+            // Delete Modal Functions
+            function confirmDelete ( prescriptionId )
+            {
+                const modal = document.getElementById( 'deleteModal' );
+                const form = document.getElementById( 'deleteForm' );
+                form.action = `/prescriptions/delete/${ prescriptionId }/`;
+                modal.classList.add( 'active' );
+            }
+
+            function closeDeleteModal ()
+            {
+                document.getElementById( 'deleteModal' ).classList.remove( 'active' );
+            }
+
+            // Close modal on background click
+            document.getElementById( 'deleteModal' ).addEventListener( 'click', function ( e )
+            {
+                if ( e.target === this )
+                {
+                    closeDeleteModal();
+                }
+            } );
+        </script>
+    </body>
+
+</html>
