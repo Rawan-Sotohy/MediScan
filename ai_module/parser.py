@@ -55,18 +55,25 @@ def parse_medications(raw_text: str) -> List[Dict]:
     lines = [line.strip() for line in raw_text.split('\n') if line.strip()]
 
     for line in lines:
-        if len(line) < 3:
+        # Skip very short lines
+        if len(line) < 2:
+            continue
+
+        # Skip lines that are just numbers or symbols
+        if re.match(r'^[\d\s\.\,\-]+$', line):
             continue
 
         dosage = extract_dosage(line)
         frequency = extract_frequency(line)
         duration = extract_duration(line)
 
+        # Extract medicine name
         name_match = re.split(r'\d', line)
         med_name = name_match[0].strip().rstrip(',').strip() if name_match else line
 
-        if not med_name or med_name.isdigit():
-            continue
+        # If name is empty, use the whole line
+        if not med_name:
+            med_name = line.strip()
 
         medications.append({
             "name": med_name,
