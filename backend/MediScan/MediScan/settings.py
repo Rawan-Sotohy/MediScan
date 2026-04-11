@@ -147,7 +147,3 @@ load_dotenv()
 api_key = os.getenv('GOOGLE_API_KEY')
 
 
-os.environ["OPENAI_API_KEY"] = "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"
-os.environ["OPENAI_API_BASE"] = "https://openrouter.ai/api/v1"
-
-
