@@ -1,3 +1,4 @@
+backend/MediScan/db.sqlite3
 # Dataset
 data/
 *.zip

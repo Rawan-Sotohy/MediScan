@@ -618,7 +618,7 @@ def upload_prescription(request):
         image = request.FILES.get('image')
 
         if not image:
-            return render(request, 'upload.html', {
+            return render(request, 'MediScanApp/upload.html', {
                 'error': 'Please upload an image first.'
             })
 
@@ -627,10 +627,37 @@ def upload_prescription(request):
             image_path=image,
             status='pending'
         )
-    
+
+        # Call AI module
+        try:
+            import sys
+            sys.path.append('/mnt/g/MediScan')
+            from ai_module.pipeline import process_prescription
+
+            result = process_prescription(prescription.image_path.path)
+
+            if result["success"]:
+                for med in result["medications"]:
+                    ExtractedMedication.objects.create(
+                        prescription=prescription,
+                        medicine_name=med["name"],
+                        dosage=med["dosage"],
+                        frequency=med["frequency"],
+                        duration=med["duration"]
+                    )
+                prescription.status = 'processed'
+            else:
+                prescription.status = 'failed'
+
+        except Exception as e:
+            prescription.status = 'failed'
+            print(f"AI Error: {e}")
+
+        prescription.save()
 
         return redirect('loading', prescription_id=prescription.id)
-    return render(request , 'MediScanApp/upload.html')
+
+    return render(request, 'MediScanApp/upload.html')
 
 @login_required(login_url='login')
 def loading_view(request, prescription_id):
