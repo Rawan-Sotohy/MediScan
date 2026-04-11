@@ -47,43 +47,6 @@ def extract_duration(text: str) -> str:
     return "as directed"
 
 
-def correct_medication_name(name: str) -> str:
-    """
-    Uses Groq to correct OCR medication name errors
-    """
-    try:
-        from groq import Groq
-        import os
-        
-        client = Groq(api_key=os.getenv('GROQ_API_KEY'))
-        
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {
-                    "role": "system",
-                    "content": """You are a medical expert. 
-You will receive a medication name that was extracted from a handwritten prescription using OCR.
-The name might have OCR errors.
-Your job is to return ONLY the correct medication name, nothing else.
-If you're not sure, return the original name.
-Return only the medication name, no explanation."""
-                },
-                {
-                    "role": "user",
-                    "content": f"Correct this medication name: {name}"
-                }
-            ],
-            max_tokens=20
-        )
-        
-        corrected = response.choices[0].message.content.strip()
-        return corrected
-        
-    except Exception:
-        return name
-     
-
 def parse_medications(raw_text: str) -> List[Dict]:
     """
     Takes raw OCR text and returns a list of structured medications
@@ -113,9 +76,8 @@ def parse_medications(raw_text: str) -> List[Dict]:
             med_name = line.strip()
 
 
-        corrected_name = correct_medication_name(med_name)
         medications.append({
-            "name": corrected_name,
+            "name": med_name,
             "dosage": dosage,
             "frequency": frequency,
             "duration": duration,
