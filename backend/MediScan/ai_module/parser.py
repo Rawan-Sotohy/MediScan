@@ -75,6 +75,7 @@ def parse_medications(raw_text: str) -> List[Dict]:
         if not med_name:
             med_name = line.strip()
 
+
         medications.append({
             "name": med_name,
             "dosage": dosage,
