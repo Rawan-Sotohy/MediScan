@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediScan Control Panel</title>
+
+<style>
+
+/* ========================= */
+/* GLOBAL THEME + BACKGROUND */
+/* ========================= */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    overflow-x: hidden;
+}
+
+.wrapper {
+    max-width: 550px;
+    margin: auto;
+    padding: 20px;
+}
+
+.section-title {
+    font-size: 26px;
+    margin: 35px 0 15px;
+    font-weight: 600;
+}
+
+/* ========================= */
+/* CARD (shared style)       */
+/* ========================= */
+.card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+/* ========================= */
+/* SETTINGS SECTION          */
+/* ========================= */
+
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.settings-item:last-child {
+    border-bottom: none;
+}
+
+.arrow {
+    background: rgba(255,255,255,0.12);
+    border: none;
+    padding: 8px 14px;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.arrow:hover {
+    background: rgba(255,255,255,0.22);
+}
+
+/* Switch Button */
+.switch {
+    position: relative;
+    width: 46px;
+    height: 24px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+}
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #64748b;
+    border-radius: 24px;
+    transition: 0.3s;
+}
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    left: 2px;
+    top: 2px;
+    transition: 0.3s;
+}
+input:checked + .slider {
+    background: #22c55e;
+}
+input:checked + .slider::before {
+    transform: translateX(22px);
+}
+
+/* ========================= */
+/* NOTIFICATIONS SECTION     */
+/* ========================= */
+
+.notif {
+    background: rgba(255,255,255,0.08);
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+    transition: 0.25s;
+    cursor: pointer;
+}
+.notif:hover {
+    transform: translateX(5px);
+    background: rgba(255,255,255,0.15);
+}
+
+.unread {
+    border-left: 4px solid #22c55e;
+}
+.warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.badge {
+    background: #22c55e;
+    padding: 5px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+/* ========================= */
+/* MEDICATION PLAN SECTION   */
+/* ========================= */
+
+.dose {
+    background: rgba(255,255,255,0.08);
+    padding: 18px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 18px;
+    transition: 0.25s;
+}
+
+.dose:hover {
+    transform: scale(1.02);
+}
+
+.time {
+    font-size: 16px;
+    font-weight: 600;
+    color: #60a5fa;
+}
+
+.info h4 { margin: 0; font-size: 17px; }
+.info p { margin-top: 4px; opacity: 0.7; }
+
+/* Status Colors */
+.upcoming { border-left: 4px solid #22c55e; }
+.done     { border-left: 4px solid #3b82f6; opacity: 0.7; }
+.missed   { border-left: 4px solid #ef4444; }
+
+
+
+
+
+</style>
+
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- SETTINGS -->
+    <h2 class="section-title">Settings</h2>
+    <div class="card">
+
+        <div class="settings-item">
+            <span>Change Password</span>
+            <button class="arrow">→</button>
+        </div>
+
+        <div class="settings-item">
+            <span>Update Email</span>
+            <button class="arrow">→</button>
+        </div>
+
+        <div class="settings-item">
+            <span>Dark Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="darkMode">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="settings-item">
+            <span>Notifications</span>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+    <h2 class="section-title">Notifications</h2>
+
+    <div class="card">
+
+        <div class="notif unread">
+            <div>
+                <h4>New Medication Added</h4>
+                <p>Your extraction is complete.</p>
+            </div>
+            <span class="badge">New</span>
+        </div>
+
+        <div class="notif">
+            <div>
+                <h4>Dose Reminder</h4>
+                <p>You have a pill at 9:00 PM.</p>
+            </div>
+        </div>
+
+        <div class="notif warning">
+            <div>
+                <h4>Missed Dose</h4>
+                <p>You missed your 1 PM medication.</p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- MEDICATION PLAN -->
+    <h2 class="section-title">Medication Plan</h2>
+
+    <div class="card">
+
+        <div class="dose upcoming">
+            <div class="time">8:00 AM</div>
+            <div class="info">
+                <h4>Paracetamol 500mg</h4>
+                <p>1 tablet • After food</p>
+            </div>
+        </div>
+
+        <div class="dose done">
+            <div class="time">1:00 PM</div>
+            <div class="info">
+                <h4>Vitamin D</h4>
+                <p>1 capsule</p>
+            </div>
+        </div>
+
+        <div class="dose missed">
+            <div class="time">5:00 PM</div>
+            <div class="info">
+                <h4>Amoxicillin 250mg</h4>
+                <p>1 tablet • Before food</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// DARK MODE DEMO LOGIC
+document.getElementById("darkMode").addEventListener("change", () => {
+    document.body.classList.toggle("light");
+
+    if(document.body.classList.contains("light")) {
+        document.body.style.background = "#f3f4f6";
+        document.body.style.color = "#111";
+    } else {
+        document.body.style.background = "linear-gradient(135deg, #0f172a, #1e293b)";
+        document.body.style.color = "white";
+    }
+});
+
+</script>
+
+</body>
+</html>

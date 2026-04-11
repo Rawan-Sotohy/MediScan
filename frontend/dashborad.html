@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description"content="Join Thousands Of Users Imporoving Therir Health With AI-Powerd Tool.">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta http-equiv="X-UA-Compatible" content="IE=7">
+        <title>MediScan</title>
+        <link rel="stylesheet" href="css/normalize.css">
+        <html rel="stylesheet" href="css/all.min.css">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div class="medication">
+            <a href="home.html" class="btn-back"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+            <h1>Medication Plan</h1>
+            <div class="container">
+                <div class="box">
+                    <h2>Today's Schedule</h2>
+                    <div class="med-item upcoming">
+                        <div>
+                            <h3>Amoxicillin 500mg</h3>
+                            <p>1 pill — After breakfast</p>
+                            <div class="time">8:00 AM</div>
+                        </div>
+                        <button class="take-btn" onclick="markTaken(this)">Take</button>
+                    </div>
+                    <div class="med-item done">
+                        <div>
+                            <h3>Vitamin D</h3>
+                            <p>1 pill — Afternoon</p>
+                            <div class="time">1:00 PM</div>
+                        </div>
+                        <button class="take-btn" onclick="markTaken(this)">Take</button>
+                    </div>
+                    <div class="med-item missed">
+                        <div>
+                            <h3>Ibuprofen 200mg</h3>
+                            <p>1 pill — Before sleep</p>
+                            <div class="time">10:00 PM</div>
+                        </div>
+                        <button class="take-btn" onclick="markTaken(this)">Take</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="js/all.min.js"></script>
+        <script src="js/dash.js"></script>
+    </body>
+</html>

@@ -1,0 +1,6 @@
+easyocr==1.7.1
+Pillow==10.3.0
+opencv-python==4.9.0.80
+anthropic==0.25.0
+python-dotenv==1.0.0
+numpy==1.26.4
