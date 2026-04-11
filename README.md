@@ -20,40 +20,6 @@ MediScan helps patients and caregivers manage medications more efficiently. By u
 
 ---
 
-## Technology Stack
-
-- Frontend
-
-- Backend 
-
-- AI
-
----
-
-## Project Structure
-
-```bash
-
-MediScan/
-├── frontend/
-│   ├── public/
-│   └── src/
-├── backend/
-│   ├── routes/
-│   ├── models/
-│   └── app.py
-├── ai_model/  
-│   ├── data/      
-│   └── train_model.py
-├── notebooks/ 
-│   └── exploration.ipynb
-├── requirements.txt
-└── README.md    
-
-```
-
----
-
 ## Live Demo
 
 You can try a live demo of MediScan here: [Live Demo](https://alaamohamed2002.github.io/Frontend-Projects/MediScan/)
