@@ -1018,89 +1018,60 @@ def chatbot_view(request):
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 # openai.api_base = os.getenv("OPENAI_API_BASE")
-
-def chat_api(request):
-    if request.method == "POST":
-        prompt = request.POST.get("message", "")
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",  # OpenRouter supports GPT-compatible models
-                messages=[
-                    {"role": "system", "content": "You are a helpful medical assistant."},
-                    {"role": "user", "content": prompt}
-                ]
-            )
-            return JsonResponse({"response": response.choices[0].message['content']})
-        except Exception as e:
-            return JsonResponse({"error": str(e)})
 @login_required
 @require_POST
 def chat_api(request):
-    """Handle chat messages with OpenAI"""
+    """Handle chat messages with Groq"""
     try:
         data = json.loads(request.body)
         user_message = data.get('message', '').strip()
-        
+
         if not user_message:
             return JsonResponse({'success': False, 'error': 'Empty message'})
-        
-        # Save user message
+
         ChatMessage.objects.create(
             user=request.user,
             sender='user',
             message=user_message
         )
-        
-        # Get user's medication history for context
-        from .models import ExtractedMedication, Prescription
+
         user_medications = ExtractedMedication.objects.filter(
             prescription__user=request.user
         ).values_list('medicine_name', flat=True).distinct()
-        
+
         medications_context = ", ".join(user_medications) if user_medications else "No medications on record"
-        
-        # Call OpenAI API
-        openai.api_key = os.getenv('OPENAI_API_KEY')  # Set in environment variables
-        
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+
+        from groq import Groq
+        client = Groq(api_key=os.getenv('GROQ_API_KEY'))
+
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
             messages=[
                 {
                     "role": "system",
-                    "content": f"""You are a helpful medical assistant for MediScan. 
-                    The user's current medications are: {medications_context}.
-                    Provide helpful, accurate information about medications, dosages, and general health advice.
-                    Always remind users to consult their doctor for medical decisions.
-                    Be friendly, concise, and professional."""
+                    "content": f"""You are a helpful medical assistant for MediScan app.
+User's current medications: {medications_context}
+Provide helpful, accurate, and concise responses about medications, dosages, or general health advice.
+Always remind users to consult their doctor for medical decisions.
+Be friendly and professional. Keep responses under 150 words."""
                 },
-                {
-                    "role": "user",
-                    "content": user_message
-                }
+                {"role": "user", "content": user_message}
             ],
-            max_tokens=300,
-            temperature=0.7
+            max_tokens=300
         )
-        
+
         bot_response = response.choices[0].message.content.strip()
-        
-        # Save bot response
+
         ChatMessage.objects.create(
             user=request.user,
             sender='ai',
             message=bot_response
         )
-        
-        return JsonResponse({
-            'success': True,
-            'response': bot_response
-        })
-        
+
+        return JsonResponse({'success': True, 'response': bot_response})
+
     except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        })
+        return JsonResponse({'success': False, 'error': str(e)})
         
         
 # @login_required
