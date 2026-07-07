@@ -1,5 +1,6 @@
 from .ocr_engine import extract_text
 from .parser import parse_medications
+from .utils import format_medications_output
 
 
 def process_prescription(image_path: str) -> dict:
@@ -22,9 +23,12 @@ def process_prescription(image_path: str) -> dict:
     # Step 2: Parse medications from text
     medications = parse_medications(raw_text)
 
+    # Step 3: Clean/normalize before handing off (e.g. to the DB or frontend)
+    formatted_medications = format_medications_output(medications)
+
     return {
         "success": True,
         "error": None,
         "raw_text": raw_text,
-        "medications": medications
+        "medications": formatted_medications
     }
