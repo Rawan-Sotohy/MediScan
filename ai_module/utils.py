@@ -1,14 +1,21 @@
 import os
+import time
+import functools
 from pathlib import Path
 
+import groq
 
-ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.pdf'}
+
+ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png'}
 MAX_FILE_SIZE_MB = 10
 
 
 def is_valid_image(file_path: str) -> dict:
     """
-    Checks if file exists, has valid extension, and is within size limit
+    Checks if file exists, has a valid (real image) extension, and is within size limit.
+    Note: PDFs are intentionally not allowed here - the OCR pipeline sends the file
+    directly to a vision model as an image, so a PDF would silently produce garbage
+    results instead of a clear error.
     """
     path = Path(file_path)
 
@@ -38,3 +45,39 @@ def format_medications_output(medications: list) -> list:
             "duration":  med.get("duration", "As directed"),
         })
     return formatted
+
+
+def with_retry(max_retries: int = 3, base_delay: float = 2.0):
+    """
+    Decorator for Groq API calls. Automatically retries with exponential
+    backoff on rate limits (429) and transient connection/server errors,
+    so a single busy moment on Groq's side doesn't fail the user's request.
+    Client errors (bad request, auth, invalid model, etc.) are NOT retried -
+    retrying those would just waste time and return the same error again.
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            last_error = None
+            for attempt in range(max_retries + 1):
+                try:
+                    return func(*args, **kwargs)
+                except groq.RateLimitError as e:
+                    last_error = e
+                except groq.APIConnectionError as e:
+                    last_error = e
+                except groq.APIStatusError as e:
+                    # Only retry server-side errors (5xx). Anything else
+                    # (bad request, invalid API key, model not found...)
+                    # will fail again immediately, so raise right away.
+                    if 500 <= e.status_code < 600:
+                        last_error = e
+                    else:
+                        raise
+
+                if attempt < max_retries:
+                    time.sleep(base_delay * (2 ** attempt))
+
+            raise last_error
+        return wrapper
+    return decorator
