@@ -23,11 +23,7 @@ from reportlab.lib.units import inch
 import io
 from django import forms
 import json
-import openai  
 import os
-import google.generativeai as genai
-from google import genai  
-from google.genai import types
 import re
 
 
@@ -628,10 +624,9 @@ def upload_prescription(request):
             status='pending'
         )
 
-        # Call AI module
+        # Call AI module (ai_module lives inside backend/MediScan, next to manage.py,
+        # so it travels with the project on any machine/deployment - no hardcoded path needed)
         try:
-            import sys
-            sys.path.append('/mnt/g/MediScan')
             from ai_module.pipeline import process_prescription
 
             result = process_prescription(prescription.image_path.path)
@@ -1016,12 +1011,10 @@ def chatbot_view(request):
     """Display chatbot page"""
     return render(request, 'mediScanApp/chat.html')
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-# openai.api_base = os.getenv("OPENAI_API_BASE")
 @login_required
 @require_POST
 def chat_api(request):
-    """Handle chat messages with Groq"""
+    """Handle chat messages via the ai_module chatbot (Groq)"""
     try:
         data = json.loads(request.body)
         user_message = data.get('message', '').strip()
@@ -1041,26 +1034,13 @@ def chat_api(request):
 
         medications_context = ", ".join(user_medications) if user_medications else "No medications on record"
 
-        from groq import Groq
-        client = Groq(api_key=os.getenv('GROQ_API_KEY'))
+        from ai_module.chatbot import ask_chatbot
+        result = ask_chatbot(user_message, medications_context=medications_context)
 
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"""You are a helpful medical assistant for MediScan app.
-User's current medications: {medications_context}
-Provide helpful, accurate, and concise responses about medications, dosages, or general health advice.
-Always remind users to consult their doctor for medical decisions.
-Be friendly and professional. Keep responses under 150 words."""
-                },
-                {"role": "user", "content": user_message}
-            ],
-            max_tokens=300
-        )
+        if not result["success"]:
+            return JsonResponse({'success': False, 'error': result["error"]})
 
-        bot_response = response.choices[0].message.content.strip()
+        bot_response = result["reply"]
 
         ChatMessage.objects.create(
             user=request.user,
